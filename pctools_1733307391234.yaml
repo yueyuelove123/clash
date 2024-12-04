@@ -1,0 +1,52 @@
+port: 7890
+socks-port: 7891
+mixed-port: 7892
+allow-lan: true
+mode: rule
+log-level: info
+external-controller: '0.0.0.0:9090'
+clash-for-android:
+    append-system-dns: false
+profile:
+    tracing: true
+dns:
+    enable: true
+    enhanced-mode: fake-ip
+    ipv6: false
+    default-nameserver: [223.5.5.5, 119.29.29.29]
+    fake-ip-range: 198.18.0.1/16
+    use-hosts: true
+    nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query']
+    fallback: ['https://doh.dns.sb/dns-query', 'https://dns.cloudflare.com/dns-query', 'https://dns.twnic.tw/dns-query', 'tls://1.0.0.1:853', 'tls://8.8.4.4:853']
+    fallback-filter: { geoip: true, ipcidr: [240.0.0.0/4, 0.0.0.0/32] }
+proxies:
+    - { name: 'socks1', type: socks5, server: 107.180.184.66, port: 5878, username: uvldymop, password: 8k0cj1tt7mdb, udp: true }
+proxy-groups:
+  - name: Proxy
+    type: select
+    proxies:
+      - ⚖️ 负载均衡-散列
+      - ⚖️ 负载均衡-轮询
+      - socks1
+  - name: ⚖️ 负载均衡-散列
+    type: load-balance
+    url: http://www.google.com/generate_204
+    interval: 300
+    strategy: consistent-hashing
+    proxies:
+      - socks1
+  - name: ⚖️ 负载均衡-轮询
+    type: load-balance
+    url: http://www.google.com/generate_204
+    interval: 300
+    strategy: round-robin
+    proxies:
+      - socks1
+rules:
+  - DOMAIN-SUFFIX,google.com,Proxy
+  - DOMAIN-KEYWORD,google,Proxy
+  - DOMAIN,google.com,Proxy
+  - DOMAIN-SUFFIX,ad.com,REJECT
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,Proxy
