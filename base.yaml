@@ -20,7 +20,7 @@ dns:
     fallback: ['https://doh.dns.sb/dns-query', 'https://dns.cloudflare.com/dns-query', 'https://dns.twnic.tw/dns-query', 'tls://1.0.0.1:853', 'tls://8.8.4.4:853']
     fallback-filter: { geoip: true, ipcidr: [240.0.0.0/4, 0.0.0.0/32] }
 proxies:
-    - { name: 'socks1', type: socks5, server: 107.180.184.66, port: 5878, username: uvldymop, password: 8k0cj1tt7mdb, udp: true }
+    - { name: 'socks1', type: socks5, server: 107.180.184.250, port: 6062, username: uvldymop, password: 8k0cj1tt7mdb, udp: true }
 proxy-groups:
   - name: Proxy
     type: select
